@@ -1,21 +1,22 @@
 # weather collection script via api
 # written by: matt hoover (matthew.a.hoover@gmail.com)
 # written for: insight project
-# last updated: 05 jul 2015
+# last updated: 28 oct 2015
 
 # import libraries
 import requests
+import os
 import pymysql as mdb
 import time as time
 import calendar
 
 # define parameters
-token = ''
+token = os.getenv('WUNDERGROUND')
 sql_call = 'INSERT INTO rain (year, month, day, hour, rainfall) VALUES (%s, %s, %s, %s, %s)'
 
 # loop over years, months, and days
-for yr in range(2012, 2016):
-	for mth in range(1, 13):
+for yr in range(2015, 2016):
+	for mth in range(10, 11):
 		for day in range(1, 32):
 			# error-checking methods
 			elif(mth == 2 and day > 28):

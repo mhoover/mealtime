@@ -1,26 +1,26 @@
 # prediction time model
 # written by: matt hoover (matthew.a.hoover@gmail.com)
 # written for: insight project
-# last edited: 28 jun 2015
+# last edited: 28 oct 2015
 
 # import libraries
-from __future__ import division
+import pickle
+import os
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from __future__ import division
+from scipy.stats import boxcox
+from datetime import datetime
 from sklearn import linear_model, preprocessing
 from sklearn.metrics import mean_squared_error
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from pandas import Series, DataFrame
-import pandas as pd
-from scipy.stats import boxcox
-from datetime import datetime
-import pickle
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # directories
-id = '/Users/mhoover/Dropbox/insight/project/'
-yd = '/Users/mhoover/Dropbox/work/yum/yum_analytics/'
-od = id + 'output/'
+dir = os.getcwd()
+if not os.path.exists(dir + '/output'):
+	os.makedirs(dir + '/output')
 
 # functions
 # create analysis datasets
@@ -69,7 +69,7 @@ def trans(x, l):
 	return(np.power((x * l) + 1, 1 / l))
 
 # load order data
-d = pickle.load(open(id + 'model_data.pkl', 'rb'))
+d = pickle.load(open(dir + '/model_data.pkl', 'rb'))
 d.drop('rand', axis = 1, inplace = True)
 
 # create vectors of delivery time by restaurant
@@ -139,7 +139,7 @@ sns.kdeplot(by.predict(X_ts), color = c6, label = 'Bayes')
 plt.legend(title = 'Delivery times (test set)')
 plt.xlabel('Delivery time (minutes)')
 plt.title('Delivery time distribution by method')
-plt.savefig(od + 'deliv_times.pdf')
+plt.savefig(dir + '/output/deliv_times.pdf')
 plt.close()
 
 sns.kdeplot(trans(yb_ts, l), color = c1, label = 'Actual')
@@ -153,7 +153,7 @@ sns.kdeplot(trans(byb.predict(Xb_ts), l), color = c6, label = 'Bayes')
 plt.legend(title = 'Delivery times (test set)')
 plt.xlabel('Delivery time (minutes)')
 plt.title('Delivery time distribution by method')
-plt.savefig(od + 'deliv_times_trans.pdf')
+plt.savefig(dir + '/output/deliv_times_trans.pdf')
 plt.close()
 
 # random forests way more robust to outliers on both ends -- others are very 
@@ -187,7 +187,7 @@ ax4.set_title('Bayes regression')
 ax4.set_xlabel('Residual values')
 
 plt.suptitle('Residual versus predicted values')
-plt.savefig(od + 'residual_plots.pdf')
+plt.savefig(dir + '/output/residual_plots.pdf')
 plt.close()
 
 # plot feature importance for gradient boosting
@@ -206,7 +206,7 @@ plt.barh(ps, fimp[idx], align = 'center')
 plt.yticks(ps, fname[idx])
 plt.xlabel('Importance')
 plt.title('Feature importance (gradient boosting)')
-plt.savefig(od + 'feature_importance.pdf')
+plt.savefig(dir + '/output/feature_importance.pdf')
 plt.close()
 
 # decision:
@@ -222,4 +222,4 @@ plt.close()
 #	  performs well on metrics
 
 # save coefficients
-pickle.dump([gb, times], open(id + 'model_params.pkl', 'wb'))
+pickle.dump([gb, times], open(dir + '/model_params.pkl', 'wb'))

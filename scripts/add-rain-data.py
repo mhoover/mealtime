@@ -1,16 +1,16 @@
 # merge in rain data to order data
 # written by: matt hoover (matthew.a.hoover@gmail.com)
 # written for: insight project
-# last edited: 16 jun 2015
+# last edited: 28 oct 2015
 
 # import libraries
-from __future__ import division
+import pickle
+import os
 import pymysql as mdb
 import numpy as np
-from pandas import Series, DataFrame
 import pandas as pd
 from datetime import datetime
-import pickle
+from __future__ import division
 
 # functions
 # identify unique values
@@ -18,12 +18,12 @@ def uniques(x):
 	return(len(np.unique(x)) - len(x[x.isnull()]))
 
 # directories
-id = '/Users/mhoover/Dropbox/insight/project/'
-yd = '/Users/mhoover/Dropbox/work/yum/yum_analytics/'
-od = id + 'output/'
+dir = os.getcwd()
+if not os.path.exists(dir + '/data'):
+	os.makedirs(dir + '/data')
 
 # load order data
-d = pickle.load(open(yd + 'clean_data.pkl', 'rb'))
+d = pickle.load(open(dir + '/data/clean_data.pkl', 'rb'))
 
 # open database connection
 db = mdb.connect(user = 'root', host = 'localhost', password = '', 
@@ -64,4 +64,4 @@ d.rename(columns = {'driver_name_x': 'driver_name',
 	'driver_name_y': 'drivers_working'}, inplace = True)
 
 # save data for modeling
-pickle.dump(d, open(id + 'analysis_data.pkl', 'wb'))
+pickle.dump(d, open(dir + '/analysis_data.pkl', 'wb'))

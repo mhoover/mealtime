@@ -1,23 +1,23 @@
 # prediction time model
 # written by: matt hoover (matthew.a.hoover@gmail.com)
 # written for: insight project
-# last edited: 05 jul 2015
+# last edited: 28 oct 2015
 
 # import libraries
-from __future__ import division
+import pickle
+import os
 import numpy as np
+import pandas as pd
+import seaborn as sns
+from datetime import datetime
+from __future__ import division
 from sklearn import linear_model, preprocessing
 from sklearn.metrics import mean_squared_error
-from pandas import Series, DataFrame
-import pandas as pd
-from datetime import datetime
-import pickle
-import seaborn as sns
 
 # directories
-id = '/Users/mhoover/Dropbox/insight/project/'
-yd = '/Users/mhoover/Dropbox/work/yum/yum_analytics/'
-od = id + 'output/'
+dir = os.getcwd()
+if not os.path.exists(dir + '/output'):
+	os.makedirs(dir + '/output')
 
 # functions
 # create analysis datasets
@@ -58,7 +58,7 @@ def reg_run(X_tr, y_tr, X_cv, y_cv, X_ts, y_ts):
 	return(m, m_mse, m_ridge, m_ridge_mse)
 
 # load order data
-d = pickle.load(open(id + 'analysis_data.pkl', 'rb'))
+d = pickle.load(open(dir + '/analysis_data.pkl', 'rb'))
 
 # outcome and feature selection
 # outcome: total_time
@@ -149,7 +149,7 @@ plt.legend(title = 'Restaurant name')
 plt.xlabel('Delivery time (minutes)')
 plt.title('Delivery time distribution by restaurant')
 
-plt.savefig(od + 'restaurant_density.pdf')
+plt.savefig(dir + '/output/restaurant_density.pdf')
 plt.close()
 
 # delivery time densities by rain status
@@ -162,7 +162,7 @@ plt.legend(title = 'Weather conditions')
 plt.xlabel('Delivery time (minutes)')
 plt.title('Delivery time distribution by weather')
 
-plt.savefig(od + 'rain_density.pdf')
+plt.savefig(dir + '/output/rain_density.pdf')
 plt.close()
 
 # correlation of continuous features and outcome
@@ -182,7 +182,7 @@ sns.corrplot(corrd, annot = False, sig_stars = False, diag_names = False,
 f.tight_layout()
 
 plt.title('Feature/outcome correlation')
-plt.savefig(od + 'correlation_plot.pdf')
+plt.savefig(dir + '/output/correlation_plot.pdf')
 plt.close()
 
 # run iterations of model to find best model fit
@@ -243,4 +243,4 @@ for x in [mse_ridge1, mse_ridge2, mse_ridge3, mse_ridge4]:
 # model 2 performs the best, without parameter regularization
 
 # save data
-pickle.dump(d_sub, open(id + 'model_data.pkl', 'wb'))
+pickle.dump(d_sub, open(dir + '/model_data.pkl', 'wb'))
