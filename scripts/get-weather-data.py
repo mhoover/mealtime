@@ -30,9 +30,6 @@ for yr in range(2015, 2016):
 			db = mdb.connect(user = 'root', host = 'localhost', password = '', 
 				db = 'rain', charset = 'utf8')
 			
-			# grab current time
-			tm = time.time()
-			
 			# adjust the day and month variables to create address
 			str_day = str(day)
 			if day <= 9:
@@ -48,8 +45,7 @@ for yr in range(2015, 2016):
 				str_day)
 
 			# keep requests to under 10 per minute
-			while(time.time() < tm + 6):
-				continue
+			time.sleep(7)
 			
 			# make request via api
 			r = requests.get('http://api.wunderground.com/api/' + token + 
